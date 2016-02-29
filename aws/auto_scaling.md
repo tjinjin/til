@@ -91,6 +91,7 @@ auto scalingでのヘルスチェックと、アプリケーションとして�
 ## Terraformでの使い方
 
 ## 注意点
+* auto scalingを使うにはcloudwatchの詳細モニタリングの利用が必須で、インスタンスあたり、毎月$3.5かかる。
 
 ## Link
 * [What Is Auto Scaling? - Auto Scaling] (http://docs.aws.amazon.com/AutoScaling/latest/DeveloperGuide/WhatIsAutoScaling.html)
