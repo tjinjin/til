@@ -5,3 +5,6 @@
 * ルータの再起動を実施
 * speed.rbbtoday.comで測度のチェック
 * DNSの変更
+
+### 測度サイト
+* http://netspeed.studio-radish.com/index.html
