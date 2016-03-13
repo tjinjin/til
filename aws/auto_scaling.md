@@ -89,6 +89,31 @@ ELBのヘルスチェックを利用する場合は、OutofServiceだと異常�
 auto scalingでのヘルスチェックと、アプリケーションとしてのヘルスチェックが同期されていることが好ましいと思われる。Auto hearlingにより新しいインスタンスが出来たり、再分散によってAZの平均を取ろうとするので、インスタンス起動＝サービスインが前提になっている気がする。
 
 ## Terraformでの使い方
+Terraformでは5つのリソースをサポートしている
+* [AWS: aws_autoscaling_group - Terraform by HashiCorp] (https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html)
+* [AWS: aws_autoscaling_lifecycle_hook - Terraform by HashiCorp] (https://www.terraform.io/docs/providers/aws/r/autoscaling_lifecycle_hooks.html)
+* [AWS: aws_autoscaling_notification - Terraform by HashiCorp] (https://www.terraform.io/docs/providers/aws/r/autoscaling_notification.html)
+* [AWS: aws_autoscaling_policy - Terraform by HashiCorp] (https://www.terraform.io/docs/providers/aws/r/autoscaling_policy.html)
+* [AWS: aws_autoscaling_schedule - Terraform by HashiCorp] (https://www.terraform.io/docs/providers/aws/r/autoscaling_schedule.html)
+
+### aws_autoscaling_group
+auto scaling groupの設定。この設定が基本で、launch_configurationで各インスタンスの起動時の挙動を決め、こちらでグループ全体の設定を定義する
+
+### aws_autoscaling_lifecycle_hook
+
+### aws_autoscaling_notification
+
+### aws_autoscaling_policy
+
+
+### aws_autoscaling_schedule
+スケジュールの設定。特定時間帯で台数を変更するなどの設定をする。
+
+#### start_time/end_time
+スケジュールの時間を設定する。
+
+#### recurrent
+cronのフォーマットで時間を設定する。こっちを使えば、繰り返し処理（週末は台数減らすなど）の処理ができる。両方合わせて使用すると、recurrentの開始、終了をstart_time/end_timeが指し示すと思われる（未検証）
 
 ## 注意点
 * auto scalingを使うにはcloudwatchの詳細モニタリングの利用が必須で、インスタンスあたり、毎月$3.5かかる。
