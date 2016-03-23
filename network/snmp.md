@@ -32,10 +32,35 @@ SNMPにはたくさんのコマンドがある。
 指定したOIDの情報を取得する
 
 ```
-snmpget -v 1 -c public localhost 1.3.6.1.4.1.1182.2.1.6.0 # yamaha cpu 1minute
+$ snmpget -v 1 -c public localhost 1.3.6.1.4.1.1182.2.1.6.0 # yamaha cpu 1minute
 ```
 
 ### snmptranslate
+SNMPには標準のMIBがあるがベンダ毎に拡張したある場合どのOIDを指定すればよいかわからないそんなときに使う
+
+```
+$ snmptranslate .1.3.6.1.2.1.2.2.1.1 # OID->名前
+$ snmptranslate -On IF-MIB::ifIndex
+```
+
+MIBの一覧も登録されているデータ(`/usr/share/snmp/mibs/`)などから表示できる
+
+```
+$ snmptranslate -Tp # ツリー表示
++--iso(1)
+   |
+   +--org(3)
+      |
+      +--dod(6)
+$ snmptranslate -Tl # ドット区切りでとラベルとOIDを順に表示
+.iso(1).org(3).dod(6).internet(1).snmpV2(6).snmpModules(3).snmpv2tm(19)
+$ snmptranslate -To # OIDだけを表示
+.1.3.6.1.6.3.19
+$ snmptranslate -Ts # TlのOIDがないバージョン
+.iso.org.dod.internet.snmpV2.snmpModules.snmpv2tm
+$ snmptranslate -Tz # 名称とOIDを表示（これがよさそう）
+```
+
 
 ### snmptrap
 
