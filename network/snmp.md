@@ -25,8 +25,11 @@ SNMPではSNMPマネージャからエージェントに対して問い合わせ
 SNMPにはたくさんのコマンドがある。
 
 ### snmpwalk
+指定したOIDに一致するものを前方一致で一覧を取得する
+
 
 ### snmpget
+指定したOIDの情報を取得する
 
 ```
 snmpget -v 1 -c public localhost 1.3.6.1.4.1.1182.2.1.6.0 # yamaha cpu 1minute
