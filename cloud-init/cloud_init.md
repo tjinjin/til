@@ -84,6 +84,10 @@ user_data使えるが、実行タイミングの指定ができない（初回�
 /var/lib/cloud/instances/<instance_id>
 ```
 
+## memo
+* ホストネームが再起動によって設定され直す件は`preserve-hostname`で回避できるらしいがどうだろう
+[Amazon EC2(Linux)システム管理で知らないとハマる5つの環境設定 ｜ Developers.IO](http://dev.classmethod.jp/cloud/five-confs-of-ec2-linux-sysops/)
+
 ## Link
 * [Documentation — Cloud-Init 0.7.7 documentation] (https://cloudinit.readthedocs.org/en/latest/index.html)
 * [cloud-init in Launchpad] (https://launchpad.net/cloud-init)
