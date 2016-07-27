@@ -21,6 +21,12 @@
 - 送信クォータ（24時間あたりに送信できるEメールの最大数）
 - 最大送信レート（1秒あたりのEメール最大数）
 
+## 独自のMAIL FROMドメインを利用したい場合
+SESを利用してドメインを指定すると、MAIL FROMが独自の、実際の送信がAmazonになるため、SPF認証ができない。そこで設定が必要
+
+https://docs.aws.amazon.com/ja_jp/ses/latest/DeveloperGuide/mail-from.html
+
+
 ## Link
 * [Amazon SESによるメール送信環境の構築と実践 ｜ Developers.IO] (http://dev.classmethod.jp/cloud/aws/amazon-ses-build-and-practice/)
 * [Amazon Simple Email Service（クラウドベースのメールサービス） | AWS] (https://aws.amazon.com/jp/ses/)
