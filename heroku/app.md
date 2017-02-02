@@ -65,3 +65,6 @@ $ heroku logs --tail
 $ vi Procfile
 web: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
 ```
+## カスタムドメイン
+- https://devcenter.heroku.com/articles/custom-domains
+- https://devcenter.heroku.com/articles/ssl
