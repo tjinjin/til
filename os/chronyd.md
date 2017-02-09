@@ -109,3 +109,4 @@ Leap status     : Normal               # Leapのステータス。Normal/Insert 
 - https://access.redhat.com/documentation/ja-JP/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/sect-Understanding_chrony_and-its_configuration.html
 - https://chrony.tuxfamily.org/manual.html
 - https://access.redhat.com/documentation/ja-JP/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/sect-Using_chronyc.html
+-[新しいNTPクライアント＆サーバ、chrony \- Qiita](http://qiita.com/yunano/items/7883cf295f91f4ef716b)
