@@ -1,8 +1,9 @@
 ## chronyd
 
-## command
 
 ## 設定ファイル
+- centos 7.2
+- chrony 2.1.1
 
 ### defaultの設定ファイル（client側
 
@@ -81,8 +82,30 @@ logdir /var/log/chrony
 - logchange 0.5
   - 0.5秒以上ずれるようになったらsyslogに通知する
 - logdir /var/log/chrony
+  -logファイルの場所
+
+## chronyc
+### トラッキングの確認
+
+```
+$ chronyc tracking
+Reference ID    : 1.2.3.4 (a.b.c)          # 同期しているサーバ
+Stratum         : 3                        # 同期サーバからのホップ数
+Ref time (UTC)  : Fri Feb  3 15:00:29 2012 # 最後の測定がされた時刻
+System time     : 0.000001501 seconds slow of NTP time # システム時刻とのズレ
+Last offset     : -0.000001632 seconds # 最後のクロック更新におかえるローカルオフセットの予測
+RMS offset      : 0.000002360 seconds  # オフセット値の長期の平均
+Frequency       : 331.898 ppm fast     # chronydが修正しない場合にズレる時刻
+Residual freq   : 0.004 ppm            # 周波数？
+Skew            : 0.154 ppm            # 周波数の予測されるエラー範囲
+Root delay      : 0.373169 seconds     # ネットワークの遅延
+Root dispersion : 0.024780 seconds     # よくわからない。動悸しているサーバ群の分散度合い
+Update interval : 64.2 seconds         # システム同期の間隔
+Leap status     : Normal               # Leapのステータス。Normal/Insert second/Delete second/Not synchronized
+```
 
 ## 資料
 - https://access.redhat.com/documentation/ja-JP/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/ch-Configuring_NTP_Using_the_chrony_Suite.html
 - https://access.redhat.com/documentation/ja-JP/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/sect-Understanding_chrony_and-its_configuration.html
 - https://chrony.tuxfamily.org/manual.html
+- https://access.redhat.com/documentation/ja-JP/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/sect-Using_chronyc.html
