@@ -56,6 +56,9 @@ $ heroku ps
 # ログを確認する
 $ heroku logs
 $ heroku logs --tail
+
+# アプリにログインする
+$ heroku run bash
 ```
 
 ## 番外編
