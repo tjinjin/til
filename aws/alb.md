@@ -14,3 +14,20 @@
 - tcp_keepalive_probes:
 
 ジャンボフレームを使えるようにするにはMTUの設定が必要 [EC2 インスタンスの最大ネットワーク送信単位 \(MTU\) \- Amazon Elastic Compute Cloud](http://docs.aws.amazon.com/ja_jp/AWSEC2/latest/UserGuide/network_mtu.html#path_mtu_discovery)
+
+## ALBの監視
+### Cloudwatch メトリクス
+- HTTPCode_ELB_4XX_Count はClient <-> ALB間のフロントエンド接続。ターゲットへ通信は流れていない
+- HTTPCode_Target_2XX_Count はALB<->ターゲットのバックエンド接続。ターゲットによって生成されたHTTP応答コードの数。ALBの応答コードは含まれない
+- RejectedConnectionCount ロードバランサが最大接続数に達したために拒否された接続の数。ピーキーなアクセスでLBが耐えられないケースはここで落ちると思われる
+- パーセンタイルで統計を見るとよいらしい（異常が分離できる？データの分散度合いがわかる）
+  - パーセンタイルとは、あるデータ群を最小値から順番に並べていき、ある数値がデータの小さい方から見て何%の一にあるかを示すもの
+- TargetResponseTime 平均のレイテンシー
+
+### アクセスログ
+### リクエストのトレース
+- X-Amzn-Trace-Idが付与される。ログで確認できる
+
+### CloudTrailのログ
+
+
