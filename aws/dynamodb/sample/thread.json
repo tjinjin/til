@@ -1,0 +1,27 @@
+{
+    "AttributeDefinitions": [
+        {
+            "AttributeName": "ForumName",
+            "AttributeType": "S"
+        },
+        {
+            "AttributeName": "Subject",
+            "AttributeType": "S"
+        }
+    ],
+    "TableName": "Thread",
+    "KeySchema": [
+        {
+            "AttributeName": "ForumName",
+            "KeyType": "HASH"
+        },
+        {
+            "AttributeName": "Subject",
+            "KeyType": "RANGE"
+        }
+    ],
+    "ProvisionedThroughput": {
+        "ReadCapacityUnits": 1,
+        "WriteCapacityUnits": 1
+    }
+}
