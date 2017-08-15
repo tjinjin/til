@@ -27,3 +27,6 @@ http://docs.aws.amazon.com/ja_jp/AWSEC2/latest/UserGuide/t2-instances.html
 
 - CPUCreditUsage: インスタンスによって消費されるCPUクレジットすう
 - CPUCreditBalance: クレジット数
+
+## パフォーマンス
+- https://d0.awsstatic.com/events/jp/2017/summit/slide/D4T2-5.pdf
