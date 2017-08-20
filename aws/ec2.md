@@ -12,7 +12,7 @@ http://docs.aws.amazon.com/ja_jp/AWSEC2/latest/UserGuide/t2-instances.html
 - 1台のvCPUを使用率50%で2分間実行
 - 2台のvCPUを使用率25%で2分間実行
 
-| instanceType  | 初期CPUクレジット  | 1時間あたりの増加 | vCPU | baseline  | max cregit |
+| instanceType  | 初期CPUクレジット  | 1時間あたりの増加 | 単一のvCPU | baseline  | max cregit |
 |------------|------|----|---|---------------|-------|
 | t2.nano    | 30   | 3  | 1 | 5%            | 72    |
 | t2.micro   | 30   | 6  | 1 | 10%           | 144   |
@@ -21,6 +21,8 @@ http://docs.aws.amazon.com/ja_jp/AWSEC2/latest/UserGuide/t2-instances.html
 | t2.large   | 60   | 36 | 2 | 60%(max200)   | 864   |
 | t2.xlarge  | 120  | 54 | 4 | 90%(max400)   | 1296  |
 | t2.2xlarge | 240  | 81 | 8 | 135%(max800)  | 1944  |
+
+t2.medium以上は複数のvCPUを持つ。ベースラインは単一vCPUあたりの割合なので、例えばt2.largeは2つのvCPUでベースライン60%なので、CPU使用率は30%になる
 
 
 ### クレジットの監視
