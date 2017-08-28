@@ -60,3 +60,223 @@ aws kinesis get-records --shard-iterator AAAAAAAAAAHSywljv0zEgPX4NyKdZ5wryMzP9yA
   - 成功した  GetRecords 呼び出しの回数 ストリームからの受信失敗を検出
 
 black beltより https://image.slidesharecdn.com/20160810aws-blackbelt-kinesis-160815123037/95/aws-black-belt-online-seminar-2016-amazon-kinesis-46-638.jpg?cb=1471264435
+
+# document
+## kinesisとは
+## Amazon Kinesis Streamsへのデータの書き込み
+### KPLとは
+- Kinesis Producer Library
+  - 自動的で設定可能な再試行メカニズムにより 1 つ以上の Kinesis stream へ書き込む
+  - レコードを収集し、PutRecords を使用して、リクエストごとに複数シャードへ複数レコードを書き込む
+  - ユーザーレコードを集約し、ペイロードサイズを増加させ、スループットを改善する
+  - コンシューマーで Kinesis Client Library（KCL）とシームレスに統合して、バッチ処理されたレコードを集約解除する
+  - Amazon CloudWatch メトリクスをユーザーに代わって送信し、プロデューサーのパフォーマンスを確認可能にする
+- KPL では、ライブラリ内で最大 RecordMaxBufferedTime まで追加の処理遅延が生じる場合がありため、遅延を許容できない場合は自分で実装する
+- KPLでレコードの集約をしている場合、KCL側でレコードの集約解除をして上げる必要が出てくる
+
+### kinesis agent
+OSに直接入れて、ログなどをkinesisに流すことができる
+
+### KCL
+> KCL は Java ライブラリです。Java 以外の言語のサポートは、MultiLangDaemon という多言語インターフェイスを使用して提供されます。このデーモンは Java ベースで、Java 以外の KCL 言語を使用するときに実行されます。 たとえば、KCL for Python をインストールして、コンシューマーアプリケーションをすべて Python で書く場合でも、MultiLangDaemon を使用するために、Java をシステムにインストールする必要があります
+
+- ストリームに接続する
+- シャードを列挙する
+- シャードと他のワーカー（存在する場合）の関連付けを調整する
+- レコードプロセッサで管理する各シャードのレコードプロセッサをインスタンス化する
+- ストリームからデータレコードを取得する
+- 対応するレコードプロセッサにレコードを送信する
+- 処理されたレコードのチェックポイントを作成する
+- ワーカーのインスタンス数が変化したときに、シャードとワーカーの関連付けを調整する
+- シャードが分割またはマージされたときに、シャードとワーカーの関連付けを調整する
+
+### Amazon Kinesis Streamsコンシューマのトラブルシューティング
+- 同じシャードに属するレコードが複数のレコードで実行される可能性
+
+## 高度なトピック
+- KCLを使うとDynamoDBを使うようになる。状態の追跡に利用しているっぽい
+- kinesisの遅延に最も影響するのはコンシューマ側のポーリング感覚。1秒がよいと思われる
+- LambdaでKPLが集約したレコードの解除を行うには特別なモジュールの使用が必要とのこと
+- リシャーディングによってシャードが拡張したときにKCLなどでは自動で追従できるっぽい？
+
+
+## リシャーディング
+- できることは2つ、シャードの分割とマージ。前者では1つのシャードを2つに、後者は2つのシャードを1つに
+- 実行対象のシャードおよびシャードペアは親シャードと呼ばれる
+
+### リシャーディング戦略
+リシャーディングの目的はストリームのデータ流量の変化に適応すること。
+
+リシャーディングのトリガーは２つ考えられる。
+- Cloudwatchメトリクスで、シャードがホットであるかコールドであるかを判断する
+  - 具体的に何を見ればいいか調べる
+- データレコードのパーティションキーによって生成されたハッシュキー値をログに記録する
+  - これをチェックする仕組みを作って判断する
+
+これからはProducer/Consumerとは別の存在が行うのがよさそう
+
+### リシャーディング分割
+
+- それぞれのシャードにはHashKeyRangeが定義されている。そのシャードを2つに分割したい場合は、通常はそのHasyKeyRangeの真ん中を指定して分割してやればよい。
+- マネジメントコンソール上でのシャードのエディットはシャード数の増減でリシャーディングは行わないっぽい。なので、既存のシャードにたまったデータを早く処理したい場合はリシャーディングしないとダメ。
+
+```
+# shardのHashRangeを確認する
+$ aws kinesis describe-stream --stream-name examplestream
+{
+    "StreamDescription": {
+        "RetentionPeriodHours": 24,
+        "StreamName": "examplestream",
+        "Shards": [
+            {
+                "ShardId": "shardId-000000000000",
+                "HashKeyRange": {
+                    "EndingHashKey": "340282366920938463463374607431768211455",
+                    "StartingHashKey": "0"
+                },
+                "SequenceNumberRange": {
+                    "StartingSequenceNumber": "49576292205153501102148580626741318270310083545912049666"
+                }
+            }
+        ],
+        "StreamARN": "arn:aws:kinesis:ap-northeast-1:hogehoge:stream/examplestream",
+        "EnhancedMonitoring": [
+            {
+                "ShardLevelMetrics": []
+            }
+        ],
+        "StreamStatus": "ACTIVE"
+    }
+}
+# シャードを分割する
+$ aws kinesis split-shard --stream-name examplestream --shard-to-split shardId-000000000000 --new-starting-hash-key 170141183460469231731687303715884105727
+$ aws kinesis describe-stream --stream-name examplestream
+{
+    "StreamDescription": {
+        "RetentionPeriodHours": 24,
+        "StreamName": "examplestream",
+        "Shards": [
+            {
+                "ShardId": "shardId-000000000000",
+                "HashKeyRange": {
+                    "EndingHashKey": "340282366920938463463374607431768211455",
+                    "StartingHashKey": "0"
+                },
+                "SequenceNumberRange": {
+                    "EndingSequenceNumber": "49576300004002856343289126011049985768053015998086774786",
+                    "StartingSequenceNumber": "49576292205153501102148580626741318270310083545912049666"
+                }
+            },
+            {
+                "ShardId": "shardId-000000000001",
+                "HashKeyRange": {
+                    "EndingHashKey": "170141183460469231731687303715884105726",
+                    "StartingHashKey": "0"
+                },
+                "ParentShardId": "shardId-000000000000",
+                "SequenceNumberRange": {
+                    "StartingSequenceNumber": "49576408637188077414142288222735669739519391729014800402"
+                }
+            },
+            {
+                "ShardId": "shardId-000000000002",
+                "HashKeyRange": {
+                    "EndingHashKey": "340282366920938463463374607431768211455",
+                    "StartingHashKey": "170141183460469231731687303715884105727"
+                },
+                "ParentShardId": "shardId-000000000000",
+                "SequenceNumberRange": {
+                    "StartingSequenceNumber": "49576408637210378159340818845877205457792040090520780834"
+                }
+            }
+        ],
+        "StreamARN": "arn:aws:kinesis:ap-northeast-1:hogehoge:stream/examplestream",
+        "EnhancedMonitoring": [
+            {
+                "ShardLevelMetrics": []
+            }
+        ],
+        "StreamStatus": "ACTIVE"
+    }
+}
+# 分割したシャードを更に分割する
+$ aws kinesis split-shard --stream-name examplestream --shard-to-split shardId-000000000000 --new-starting-hash-key 170141183460469231731687303715884105727
+$ aws kinesis describe-stream --stream-name examplestream
+
+{
+    "StreamDescription": {
+        "RetentionPeriodHours": 24,
+        "StreamName": "examplestream",
+        "Shards": [
+            {
+                "ShardId": "shardId-000000000000",
+                "HashKeyRange": {
+                    "EndingHashKey": "340282366920938463463374607431768211455",
+                    "StartingHashKey": "0"
+                },
+                "SequenceNumberRange": {
+                    "EndingSequenceNumber": "49576300004002856343289126011049985768053015998086774786",
+                    "StartingSequenceNumber": "49576292205153501102148580626741318270310083545912049666"
+                }
+            },
+            {
+                "ShardId": "shardId-000000000001",
+                "HashKeyRange": {
+                    "EndingHashKey": "170141183460469231731687303715884105726",
+                    "StartingHashKey": "0"
+                },
+                "ParentShardId": "shardId-000000000000",
+                "SequenceNumberRange": {
+                    "EndingSequenceNumber": "49576408637199227786741553534305228672836114887049478162",
+                    "StartingSequenceNumber": "49576408637188077414142288222735669739519391729014800402"
+                }
+            },
+            {
+                "ShardId": "shardId-000000000002",
+                "HashKeyRange": {
+                    "EndingHashKey": "340282366920938463463374607431768211455",
+                    "StartingHashKey": "170141183460469231731687303715884105727"
+                },
+                "ParentShardId": "shardId-000000000000",
+                "SequenceNumberRange": {
+                    "StartingSequenceNumber": "49576408637210378159340818845877205457792040090520780834"
+                }
+            },
+            {
+                "ShardId": "shardId-000000000003",
+                "HashKeyRange": {
+                    "EndingHashKey": "85070591730234615865843651857942052862",
+                    "StartingHashKey": "0"
+                },
+                "ParentShardId": "shardId-000000000001",
+                "SequenceNumberRange": {
+                    "StartingSequenceNumber": "49576408708238251616660853551668468156177085162244276274"
+                }
+            },
+            {
+                "ShardId": "shardId-000000000004",
+                "HashKeyRange": {
+                    "EndingHashKey": "170141183460469231731687303715884105726",
+                    "StartingHashKey": "85070591730234615865843651857942052863"
+                },
+                "ParentShardId": "shardId-000000000001",
+                "SequenceNumberRange": {
+                    "StartingSequenceNumber": "49576408708260552361859384174810003874449733523750256706"
+                }
+            }
+        ],
+        "StreamARN": "arn:aws:kinesis:ap-northeast-1:hogehoge:stream/examplestream",
+        "EnhancedMonitoring": [
+            {
+                "ShardLevelMetrics": []
+            }
+        ],
+        "StreamStatus": "ACTIVE"
+    }
+}
+```
+
+### リシャーディング結合
+- shardを結合するにはハッシュキーの範囲が隣接していないとだめ。
+- ハッシュキーのレンジはストリームごとにもっているっぽい。
+-
