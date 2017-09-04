@@ -137,4 +137,148 @@ indices.fielddata.cache.sizeとindices.breaker.fielddata.limitは深い関係が
 
 ## 参考
 - [第１回 Elastisearch 入門 インデックスを設計する際に知っておくべき事 ｜ Developers\.IO](http://dev.classmethod.jp/server-side/elasticsearch-getting-started-01/)
+- [Elasticsearch システム概要 – Hello\! Elasticsearch\. – Medium](https://medium.com/hello-elasticsearch/elasticsearch-afd52d72711)
+## search api
+### Mappingの確認
 
+```
+GET {index}/_mapping
+```
+
+### Query DSLを使って検索
+
+- 全文検索に利用する
+- 関連性のスコアに依存する結果を得たいときに利用
+- 一致率をみる検索
+
+```
+curl -XGET 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' -d'
+{
+    "query" : {
+        "term" : { "user" : "kimchy" }
+    }
+}
+'
+
+#### match_all 検索
+
+```
+curl -XGET 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' -d'
+{
+    "query": {
+        "match_all": { "boost" : 1.2 }
+    }
+}
+'
+```
+
+### Filters
+
+- ドキュメントそのものを検索する感じ
+
+#### Term Query
+
+下の例の場合、userフィールドにKimchyが含まれるものを検索する
+
+```
+curl -XPOST 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' -d'
+{
+  "query": {
+    "term" : { "user" : "Kimchy" }
+  }
+}
+'
+```
+
+#### Terms Query
+
+Term Queryの複数書ける番？
+
+```
+
+curl -XGET 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' -d'
+{
+    "query": {
+        "constant_score" : {
+            "filter" : {
+                "terms" : { "user" : ["kimchy", "elasticsearch"]}
+            }
+        }
+    }
+}
+'
+```
+
+#### Range Query
+
+データの範囲指定
+
+- gte greater-than or equal to
+- gt  greater-than
+- lte less-than or equal to
+- lt  less-than
+- boost
+
+```
+curl -XGET 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' -d'
+{
+    "query": {
+        "range" : {
+            "age" : {
+                "gte" : 10,
+                "lte" : 20,
+                "boost" : 2.0
+            }
+        }
+    }
+}
+'
+```
+
+
+#### Exists Query
+
+下記だとuser というfieldがnullでなければ引っかかる
+
+```
+curl -XGET 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' -d'
+{
+    "query": {
+        "exists" : { "field" : "user" }
+    }
+}
+'
+```
+
+以下は引っかかる
+
+```
+{ "user": "jane" }
+{ "user": "" }
+{ "user": "-" }
+{ "user": ["jane"] }
+{ "user": ["jane", null ] }
+```
+
+#### Prefix Query
+
+指定したフィールドで指定したprefixで始まる文字が抽出される
+
+```
+curl -XGET 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' -d'
+{ "query": {
+    "prefix" : { "user" : "ki" }
+  }
+}
+'
+```
+
+#### Wildcard Query
+
+#### Regexp Query
+
+#### Fuzzy Query
+
+#### Type Query
+
+#### Ids query
