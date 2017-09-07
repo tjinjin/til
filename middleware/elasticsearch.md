@@ -190,6 +190,7 @@ curl -XPOST 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' 
 '
 ```
 
+### Term level queries
 #### Terms Query
 
 Term Queryの複数書ける番？
@@ -282,3 +283,47 @@ curl -XGET 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' -
 #### Type Query
 
 #### Ids query
+
+### Compound queries
+
+### Joining queries
+SQLでいう結合。コストが高い。
+
+#### Nested Query
+
+nestされたmappingに対してpathを指定してそこから絞り込み検索ができる
+
+```
+curl -XPUT 'localhost:9200/my_index?pretty' -H 'Content-Type: application/json' -d'
+{
+    "mappings": {
+        "type1" : {
+            "properties" : {
+                "obj1" : {
+                    "type" : "nested"
+                }
+            }
+        }
+    }
+}
+'
+
+curl -XGET 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' -d'
+{
+    "query": {
+        "nested" : {
+            "path" : "obj1",
+            "score_mode" : "avg",
+            "query" : {
+                "bool" : {
+                    "must" : [
+                    { "match" : {"obj1.name" : "blue"} },
+                    { "range" : {"obj1.count" : {"gt" : 5}} }
+                    ]
+                }
+            }
+        }
+    }
+}
+'
+```
