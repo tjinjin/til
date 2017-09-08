@@ -90,7 +90,7 @@ masterがクラスタのボトルネックになることはめったにない
 
 JSONではなく表形式で出力できる
 
-``
+```
 GET /_cat
 ```
 
@@ -103,7 +103,9 @@ GET /_cat/nodes?help
 GET /_cat/nodes?v&h=ip,port,heapPercent,heapMax
 ```
 
+
 ## 用語
+
 ### field data
 分析されたフィールドデータはキャッシュになる。フィールドデータへのアクセスはインデックス内のすべてのドキュメントが読み込まれる仕組み。defaultは無制限となっている。limitを設定するのは推奨ではない？フィールドデータをひたすらため続ける
 
@@ -139,12 +141,8 @@ indices.fielddata.cache.sizeとindices.breaker.fielddata.limitは深い関係が
 - [第１回 Elastisearch 入門 インデックスを設計する際に知っておくべき事 ｜ Developers\.IO](http://dev.classmethod.jp/server-side/elasticsearch-getting-started-01/)
 - [Elasticsearch システム概要 – Hello\! Elasticsearch\. – Medium](https://medium.com/hello-elasticsearch/elasticsearch-afd52d72711)
 ## search api
-### Mappingの確認
-
-```
-GET {index}/_mapping
-```
-
+## Indices API
+## QueryDSL
 ### Query DSLを使って検索
 
 - 全文検索に利用する
@@ -159,6 +157,7 @@ curl -XGET 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' -
     }
 }
 '
+```
 
 #### match_all 検索
 
