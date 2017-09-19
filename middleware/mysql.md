@@ -76,3 +76,17 @@ $ for table in \
 from information_schema.tables
 where table_schema in ('aaa', 'bbb');
 ```
+
+### フラクメンテーションの確認
+
+大きめのフラグメンテーションが起きているテーブルを洗い出す
+
+```
+SELECT TABLE_NAME, (DATA_LENGTH + INDEX_LENGTH) / 1024 / 1024 AS sizeMb,DATA_FREE / 1024 / 1024 AS data_free_MB
+FROM information_schema.tables
+WHERE engine LIKE 'InnoDB'
+and TABLE_SCHEMA = 'db_name'
+AND DATA_FREE > 100 * 1024 * 1024;
+```
+
+https://mysqlstepbystep.com/2015/07/15/useful-queries-on-mysql-information_schema/
