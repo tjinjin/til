@@ -5,7 +5,29 @@
     <title>Simple Todo App</title>
   </head>
   <body>
-    <div id="contents"></div>
+    <!-- text入力 -->
+    <div id="addTodo">
+      <form onsubmit="">
+        <input type="text" />
+        <button type="submit">
+          Add Todo
+        </button>
+      </form>
+    </div>
+
+    <!-- Todo一覧 -->
+    <ul id="todoList">
+      <li>First Todo</li>
+      <li style="text-decoration: line-through">Second Todo</li>
+      <li>Third Todo</li>
+    </ul>
+
+    <!-- フィルタリング -->
+    <p id="links">
+      Show:
+      <span>All</span>, <a href="">Active</a>,<a href="">Completed</a>
+    </p>
+
     <script src="bundle.js"></script>
   </body>
 </html>
