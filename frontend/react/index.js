@@ -1,7 +1,6 @@
 import { createStore } from 'redux';
 import { addTodo, toggeTodo, setVisibilityFilter } from './actions/index.js';
-
-let store = createStore(function() { return 'Hello Redux' })
+import { todoApp } from './reducers/index.js';
 
 let store = creataStore(() => { return 'Hello' });
 
