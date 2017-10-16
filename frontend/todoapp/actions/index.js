@@ -3,7 +3,7 @@ let nextTodoId = 0;
 // TODOを追加する
 export const addTodo = (text) => {
   return {
-    type: 'ADD_TODO'.
+    type: 'ADD_TODO',
     id: nextTodoId++,
     text
   };

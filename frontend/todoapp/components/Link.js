@@ -21,7 +21,7 @@ class Link extends React.Component {
 
 Link.propTypes = {
   active: PropTypes.bool.isRequired,
-  children: PropTypes.node.inRequired,
+  children: PropTypes.node.isRequired,
   onClick: PropTypes.func.isRequired
 };
 
