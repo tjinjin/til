@@ -1,5 +1,5 @@
 {
-  "name": "react",
+  "name": "todoapp",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -14,6 +14,8 @@
     "redux": "^3.7.2"
   },
   "devDependencies": {
-    "babelify": "^7.3.0"
+    "babelify": "^7.3.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
   }
 }
