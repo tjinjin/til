@@ -68,6 +68,25 @@ $ for table in \
 
 ```
 
+## パーティショニング
+- http://nippondanji.blogspot.jp/2009/04/1.html
+
+## パラメーター
+- "character_set_database" : "現在参照しているDBの文字コード",
+- "character_set_client" : "クライアント側で発行したsql文",
+- "character_set_connection" : "utf8mb4",
+- "character_set_results" : "utf8mb4",
+- "character_set_server" : "utf8mb4",
+- "sort_buffer_size" : "2097152",
+- "log_bin_trust_function_creators" : "1",
+- "innodb_log_buffer_size": "33554432",
+- "general_log" : "1",
+- "log_output" : "FILE",
+- "slow_query_log" : "1",
+- "long_query_time" : "1",
+- "innodb_file_format" : "MySQLのファイル形式。Antelope/Barracuda",
+- "tx_isolation" : "分離レベル"
+
 ## ちょい技
 ### tableのレコード数を確認する
 
@@ -90,3 +109,19 @@ AND DATA_FREE > 100 * 1024 * 1024;
 ```
 
 https://mysqlstepbystep.com/2015/07/15/useful-queries-on-mysql-information_schema/
+=======
+### コネクションの情報を見る
+
+```
+> show processlist
+```
+
+
+### mysqlのテーブルサイズの確認方法
+http://d.hatena.ne.jp/sho-yamasaki/20120405/1333640589
+
+### プロシージャを確認する
+
+```
+> show create procedure mysql.rds_rotate_general_log;
+```

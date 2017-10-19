@@ -77,3 +77,29 @@ I/Oサイズの最大は256KBだが、ほとんど使われない。32KB未満�
 > I/O サイズが 32 KB より大きい場合、指定より少ない I/O で Provisioned IOPS がすべて消費される可能性もあります。たとえば、5,000 IOPS にプロビジョニングされたシステムでは、64 KB の I/O では最大 2,500 IOPS、128 KB の I/O では 1,250 IOPS を達成できます。
 
 細かい情報も乗っているのでパフォーマンスで困ったら読む http://docs.aws.amazon.com/ja_jp/AmazonRDS/latest/UserGuide/CHAP_Storage.html
+
+## ログファイル
+general.log/slow.logは基本的に出ないようになっている。設定が必要。
+
+ログ出力オンすると、AWS側がログ容量を監視する。閾値を超えるとこんなメッセージが
+
+```
+The MySQL general and/or slow logs of the DB Instance: hoge are consuming a large amount of provisioned storage. Please refer to http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.Concepts.MySQL.html#USER_LogAccess.MySQL.Generallog for more details. The storage consumed by general and/or slow logs is at 5% of the provisioned storage [Total: 5.19 GB] [Components: generalLogSize:5.19 GB,binlogSize:1.17 KB,innoDbLogSize:256.00 MB]
+```
+
+
+TABLEにlogをアウトプットしている場合にはprocedureを呼び出すかTRUNCATEをする
+
+```
+> call mysql.rds_rotate_slow_log;
+> call mysql.rds_rotate_slow_log;
+> call mysql.rds_rotate_general_log;
+> call mysql.rds_rotate_general_log;
+```
+
+
+2回叩けばだいた消えるらしい
+
+
+
+- http://docs.aws.amazon.com/ja_jp/AmazonRDS/latest/UserGuide/USER_LogAccess.Concepts.MySQL.html
