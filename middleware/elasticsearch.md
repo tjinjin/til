@@ -326,3 +326,14 @@ curl -XGET 'localhost:9200/_search?pretty' -H 'Content-Type: application/json' -
 }
 '
 ```
+
+## ドリルダウン方法
+どんどん掘りげていく方法。DBでいうところのshowコマンド系
+
+- `/_cat/indices`でindexの一覧を取得
+- 確認したいindex名で`/{index_name}/_mapping`でmappingの状態を確認できる
+- `/{index_name}/_mapping | jq '.["{index_name}"].mappings | keys'`でtype一覧を取得 ([])
+- `/{index_name}/_mapping/{type}`でtypeのデータ構造を取得
+- `/{index_name}/_mapping/{type} | jq '.["{index_name}"].mappings.{type}.properties | keys'`でフィールド一覧
+  - そこから先はデータによる
+- object datatypeの場合, properties fieldを持つ
