@@ -1,0 +1,15 @@
+h2 {
+  background-image: url(../img/_bg.png);
+  background-repeat: repeat-x;
+}
+
+dl {
+  background-image: url(../img/_bg.png);
+  background-repeat: no-repeat;
+}
+
+p {
+  background-image: url(../img/_bg.png);
+  background-repeat: repeat-y;
+
+}
