@@ -1,0 +1,45 @@
+nav {
+  margin: 0 auto 5em;
+  padding: 10px;
+  width: 960px;
+  background-color: #0cbadf;
+}
+
+nav ul,
+nav ul li,
+nav ul li a {
+  margin: 0;
+  padding: 0;
+}
+
+nav ul {
+  width: 960px;
+  list-style: none;
+}
+
+nav ul li {
+  padding: 0.5em 0;
+  width: 150px;
+  border: 1px solid #2c4762;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+nav#case3 ul li {
+  display: block;
+  float: left;
+}
+
+.cleafix {
+  *zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+  line-height: 0;
+}
+
+.clearfix:after {
+  clear: both;
+}

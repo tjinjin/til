@@ -1,0 +1,24 @@
+dl,dt,dd {
+  margin: 0;
+  padding: 0;
+}
+dl {
+  background-color: #333;
+  border: 1px solid #999;
+  border-top: none;
+  width: 650px;
+}
+dt {
+  color: #ccc;
+  width: 12em;
+  padding: 0.5em 0 0.5em 1em;
+  border-top: 1px solid #999;
+  float: left;
+}
+dd {
+  background-color: #FFF;
+  margin: 0 0 0 12em;
+  padding: 0.5em 1em 0.5em 1em;
+  border-top: 1px solid #999;
+  border-left: 1px solid #999;
+}
